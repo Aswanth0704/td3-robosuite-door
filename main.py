@@ -84,8 +84,8 @@ if __name__ == '__main__':
             agent.remember(observation, action, reward, new_observation, done)
             # may be I am trying to learn so fast here:
             # something like this is probably more efficient
-            if agent.time_step > agent.warmup:
-                agent.learn()
+            # if agent.time_step > agent.warmup:
+            #     agent.learn()
             agent.learn()
 
             observation = new_observation

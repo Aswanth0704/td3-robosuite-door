@@ -65,46 +65,43 @@ if __name__ == '__main__':
 
     writer = SummaryWriter('logs')
     n_games = 10000
-    best_score = 0
-    score_history = []
-    load_checkpoint = False
+    # best_score = 0
+    # score_history = []
+    # load_checkpoint = False
 
-    epsiode_identifier = f'0-actor_lr={actor_learning_rate}-critic_lr={critic_learning_rate}-batch_size={batch_size}-CriticAdamW-tau={tau}-l1={layer1_size}-l2={layer2_size}'
-    models_loaded = agent.load_models()
+    epsiode_identifier = f'1-actor_lr={actor_learning_rate}-critic_lr={critic_learning_rate}-batch_size={batch_size}-CriticAdamW-tau={tau}-l1={layer1_size}-l2={layer2_size}'
+    agent.load_models()
 
     for i in range(n_games):
         observation, _ = env.reset(seed)
         done = False
-        truncated = False
+        # truncated = False
         score = 0
-        while (not done) and (not truncated):
+        while (not done):
             action = agent.choose_action(observation)
-            new_observation, reward, done, truncated, info = env.step(action)
+            new_observation, reward, terminated, truncated, info = env.step(action)
             score+= reward
             agent.remember(observation, action, reward, new_observation, done)
-            # may be I am trying to learn so fast here:
-            # something like this is probably more efficient
-            # if agent.time_step > agent.warmup:
-            #     agent.learn()
             agent.learn()
-
+            # Move to the next state:
+            done = terminated or truncated
             observation = new_observation
 
-        if(len(score_history)>100):
-            avg_score = np.mean(score_history[-100:])
-        else:
-            avg_score = np.mean(score_history)
+        # if(len(score_history)>100):
+        #     avg_score = np.mean(score_history[-100:])
+        # else:
+        #     avg_score = np.mean(score_history)
 
-        score_history.append(score)
+        # score_history.append(score)
         writer.add_scalar(f"score - {epsiode_identifier}", score, global_step = i)
-        writer.add_scalar(f"avg_score - {epsiode_identifier}", avg_score, global_step = i)
+        # writer.add_scalar(f"avg_score - {epsiode_identifier}", avg_score, global_step = i)
 
-        if(avg_score > best_score):
-            best_score = avg_score
-        if(i%10 == 0):
+        # if(avg_score > best_score):
+        #     best_score = avg_score
+        if(i%10):
             agent.save_models()
 
-        print(f"Episode {i} | Score: {score:.2f} | Avg: {avg_score:.2f}")
+        print(f"Episode {i} | Score: {score:.2f}")
 
 
 

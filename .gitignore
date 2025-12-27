@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+
+# Logs & outputs (DO NOT PUSH)
+logs/
+robosuite_logs/
+tmp/
+slurm-*.out
+
+# Torch / RL artifacts
+*.pt
+*.pth
+*.ckpt
+*.npy
+
+# SLURM scripts (local / HPC-specific)
+runjob1.sh
+*.sh
+
+# OS
+.DS_Store
